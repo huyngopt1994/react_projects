@@ -7,6 +7,22 @@ class Clock extends Component {
         super(props);
         this.state = {date: new Date()};
     }
+    tick(){
+        // this function will be called in 1s , should update date object
+        this.setState({
+            date: new Date()
+        });
+    }
+
+    componentDidMount(){
+        // This function will run after this component was rendered
+        this.Timer = setInterval(() => this.tick(), 1000)
+
+    }
+    componentWillUnmount(){
+        // clear timer, this function will run after this component was deleted
+        clearInterval(this.Timer)
+    }
   render() {
     return (
       <div>
