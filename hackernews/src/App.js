@@ -20,15 +20,29 @@ const list = [
     },
 ];
 
+const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
 class App extends Component {
     constructor(props) {
         super(props);
 
+        // create state
         this.state = {
-            list
+            list,
+            searchTerm: '',
         };
 
+        this.onSearchChange = this.onSearchChange.bind(this)
         this.onDismiss = this.onDismiss.bind(this);
+        this.onClickme = this.onClickme.bind(this);
+    }
+    onSearchChange(event){
+       // Set state
+        this.setState({searchTerm: event.target.value });
+    }
+
+    onClickme(){
+        alert('Click me ahihihi');
     }
 
     onDismiss(id){
@@ -42,13 +56,21 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                {this.state.list.map(item => {
+                <form>
+                    <input onChange={this.onSearchChange} name='name' type="text"/>
+                    <br/>
+                    <input type="age" type="text"/>
+                    <br/>
+                    <input type="gender" type="radio"/>
+
+                </form>
+                {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
                     return (
                         <div key={item.objectId}>
-                            <span>
+                            <span   onClick={console.log('you already click on title')}>
                                 <a href={item.url}>{item.title}</a>
                             </span>
-                            <span>{item.author}</span>
+                            <span onClick={this.onClickme}>{item.author}</span>
                             <span>{item.num_comments}</span>
                             <span>{item.points}</span>
                             <span>
@@ -58,7 +80,9 @@ class App extends Component {
                                     Dismiss
                                 </button>
                             </span>
+                            <h3>{this.state.searchTerm}</h3>
                         </div>
+
                     )
                 })} ;
             </div>
