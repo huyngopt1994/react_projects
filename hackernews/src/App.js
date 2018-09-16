@@ -54,17 +54,18 @@ class App extends Component {
     }
 
     render() {
+        const {searchTerm, list} = this.state
         return (
             <div className="App">
                 <form>
-                    <input onChange={this.onSearchChange} name='name' type="text"/>
+                    <input value = { searchTerm} onChange={this.onSearchChange} name='name' type="text"/>
                     <br/>
                     <input type="age" type="text"/>
                     <br/>
                     <input type="gender" type="radio"/>
 
                 </form>
-                {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
+                {list.filter(isSearched(searchTerm)).map(item => {
                     return (
                         <div key={item.objectId}>
                             <span   onClick={console.log('you already click on title')}>
