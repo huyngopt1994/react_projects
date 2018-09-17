@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
+import Button from './Utils'
 
 // Create list data sample
 const list = [
@@ -31,15 +32,16 @@ const list = [
 
 const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
+// Now we using composition attributes for Search component
 class Search extends Component {
     render() {
-        const {value, onChange} = this.props;
+        const {value, onChange, children} = this.props;
         return (
             <form>
-                <input type="text"
-                       value={value}
-                       onChange={onChange}
-                />
+                {children} <input type="text"
+                                  value={value}
+                                  onChange={onChange}
+            />
             </form>
         )
     }
@@ -59,12 +61,12 @@ class Table extends Component {
                         <span>{item.num_comments}</span>
                         <span>{item.points}</span>
                         <span>
-                        <button
-                            onClick={() => onDismiss(item.objectId)}
-                            type='button'
-                        >
-                            Dismiss
-                        </button>
+                            <Button
+                                onClick={()=> onDismiss(item.objectId)}
+                                className='button_1'
+                            >
+                                Dismiss
+                            </Button>
                     </span>
                     </div>)}
             </div>
@@ -111,7 +113,9 @@ class App extends Component {
                     // pass parameter
                     value={searchTerm}
                     onChange={this.onSearchChange}
-                />
+                >
+                    Search:
+                </Search>
                 <Table
                     list={list}
                     pattern={searchTerm}
