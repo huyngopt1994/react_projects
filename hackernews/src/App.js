@@ -30,6 +30,16 @@ const list = [
     },
 ];
 
+const largeColumn = {
+    width: '40%',
+}
+
+const midColumn = {
+    width: '30%',
+}
+const smallColumn = {
+    width: '10%',
+}
 const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 // Now we using composition attributes for Search component
@@ -48,19 +58,25 @@ const Search = ({ value, onChange, children }) => {
 
 const Table = ({ list, pattern, onDismiss }) => {
     return (
-        <div>
+        <div className="table">
             {list.filter(isSearched(pattern)).map(item =>
-                <div key={item.objectId}>
-                    <span>
+                <div key={item.objectId} className="table-row">
+                    <span style={largeColumn}>
                         <a href={item.url}>{item.title}</a>
                     </span>
-                    <span>{item.author}</span>
-                    <span>{item.num_comments}</span>
-                    <span>{item.points}</span>
-                    <span>
+                    <span style={midColumn}>
+                        {item.author}
+                        </span>
+                    <span style={smallColumn}>
+                        {item.num_comments}
+                        </span>
+                    <span style={smallColumn}>
+                        {item.points}
+                        </span>
+                    <span style={smallColumn}>
                             <Button
                                 onClick={() => onDismiss(item.objectId)}
-                                className='button_1'
+                                className='button-inline'
                             >
                                 Dismiss
                             </Button>
@@ -104,14 +120,16 @@ class App extends Component {
         const { searchTerm, list } = this.state
         // after that pass them to another components
         return (
-            <div className="App">
-                <Search
-                    // pass parameter
-                    value={searchTerm}
-                    onChange={this.onSearchChange}
-                >
-                    Search:
-                </Search>
+            <div className="page">
+                <div className="interactions">
+                    <Search
+                        // pass parameter
+                        value={searchTerm}
+                        onChange={this.onSearchChange}
+                    >
+                        Search:
+                    </Search>
+                </div>
                 <Table
                     list={list}
                     pattern={searchTerm}
