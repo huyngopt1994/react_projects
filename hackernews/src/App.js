@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import Button from './Utils'
 
@@ -33,45 +33,41 @@ const list = [
 const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 // Now we using composition attributes for Search component
-class Search extends Component {
-    render() {
-        const {value, onChange, children} = this.props;
-        return (
-            <form>
-                {children} <input type="text"
-                                  value={value}
-                                  onChange={onChange}
+const Search = ({ value, onChange, children }) => {
+    return (
+        <form>
+            {children}
+            <input type="text"
+                   value={value}
+                   onChange={onChange}
             />
-            </form>
-        )
-    }
+        </form>
+    )
 }
 
-class Table extends Component {
-    render() {
-        const {list, pattern, onDismiss} = this.props;
-        return (
-            <div>
-                {list.filter(isSearched(pattern)).map(item =>
-                    <div key={item.objectId}>
+
+const Table = ({ list, pattern, onDismiss }) => {
+    return (
+        <div>
+            {list.filter(isSearched(pattern)).map(item =>
+                <div key={item.objectId}>
                     <span>
                         <a href={item.url}>{item.title}</a>
                     </span>
-                        <span>{item.author}</span>
-                        <span>{item.num_comments}</span>
-                        <span>{item.points}</span>
-                        <span>
+                    <span>{item.author}</span>
+                    <span>{item.num_comments}</span>
+                    <span>{item.points}</span>
+                    <span>
                             <Button
-                                onClick={()=> onDismiss(item.objectId)}
+                                onClick={() => onDismiss(item.objectId)}
                                 className='button_1'
                             >
                                 Dismiss
                             </Button>
                     </span>
-                    </div>)}
-            </div>
-        )
-    }
+                </div>)}
+        </div>
+    )
 }
 
 class App extends Component {
@@ -90,7 +86,7 @@ class App extends Component {
 
     onSearchChange(event) {
         // Set state
-        this.setState({searchTerm: event.target.value});
+        this.setState({ searchTerm: event.target.value });
     }
 
 
@@ -100,12 +96,12 @@ class App extends Component {
         const isNotId = item => item.objectId !== id;
         const updatedList = this.state.list.filter(isNotId);
         // when state was changed , render will be call
-        this.setState({list: updatedList});
+        this.setState({ list: updatedList });
     }
 
     render() {
         // firstly get searchTerm and list from current state
-        const {searchTerm, list} = this.state
+        const { searchTerm, list } = this.state
         // after that pass them to another components
         return (
             <div className="App">

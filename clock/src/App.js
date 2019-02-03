@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 class Clock extends Component {
@@ -13,7 +12,8 @@ class Clock extends Component {
             date: new Date()
         });
     }
-
+    componentWillMount() {
+    }
     componentDidMount(){
         // This function will run after this component was rendered
         this.Timer = setInterval(() => this.tick(), 1000)
