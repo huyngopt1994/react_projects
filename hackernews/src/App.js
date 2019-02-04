@@ -39,7 +39,7 @@ const Table = ({ list, pattern, onDismiss }) => {
     return (
         <div className="table">
             {list.filter(isSearched(pattern)).map(item =>
-                <div key={item.objectId} className="table-row">
+                <div key={item.objectID} className="table-row">
                     <span style={largeColumn}>
                         <a href={item.url}>{item.title}</a>
                     </span>
@@ -54,7 +54,7 @@ const Table = ({ list, pattern, onDismiss }) => {
                         </span>
                     <span style={smallColumn}>
                             <Button
-                                onClick={() => onDismiss(item.objectId)}
+                                onClick={() => onDismiss(item.objectID)}
                                 className='button-inline'
                             >
                                 Dismiss
@@ -100,18 +100,27 @@ class App extends Component {
 
     onDismiss(id) {
         // When we dissmiss => get the new list without selected id, update this list again
-
-        const isNotId = item => item.objectId !== id;
-        const updatedList = this.state.list.filter(isNotId);
+        console.log(id);
+        const isNotId = item => item.objectID !== id;
+        const updatedList = this.state.result.hits.filter(isNotId);
         // when state was changed , render will be call
-        this.setState({ list: updatedList });
+        console.log(updatedList);
+        this.setState({
+            result: {
+                ...this.state.result,
+                hits: updatedList,
+            }
+        });
     }
 
     render() {
         // firstly get searchTerm and list from current state
         console.log(this.state)
         const { searchTerm, result } = this.state
-        if (!result) { return null; };
+        if (!result) {
+            return null;
+        }
+        ;
         // after that pass them to another components
         return (
             <div className="page">
@@ -124,11 +133,13 @@ class App extends Component {
                         Search:
                     </Search>
                 </div>
-                <Table
-                    list={result.hits}
-                    pattern={searchTerm}
-                    onDismiss={this.onDismiss}
-                />
+                {result &&
+                    <Table
+                        list={result.hits}
+                        pattern={searchTerm}
+                        onDismiss={this.onDismiss}
+                    />
+                }
             </div>
         );
     }
