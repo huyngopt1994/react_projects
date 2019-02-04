@@ -2,33 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 import Button from './Utils'
 
-// Create list data sample
-const list = [
-    {
-        title: 'React',
-        url: 'https://facebook.github.io/react/',
-        author: 'Jordan Walke',
-        num_comments: 3,
-        points: 4,
-        objectId: 0,
-    },
-    {
-        title: 'Redux',
-        url: 'https://github.com/reactjs/redux',
-        author: 'Dan Abramov, Andrew Clark',
-        num_comments: 2,
-        points: 5,
-        objectId: 1,
-    },
-    {
-        title: 'Jquery',
-        url: 'https://github.com/reactjs/jquery',
-        author: 'Huy Ngo',
-        num_comments: 4,
-        points: 7,
-        objectId: 4,
-    },
-];
+const DEFAULT_QUERY = 'redux';
+
+const PATH_BASE = 'https://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH = 'query=';
+const URL = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}`;
 
 const largeColumn = {
     width: '40%',
@@ -92,12 +71,17 @@ class App extends Component {
 
         // create state
         this.state = {
-            list,
-            searchTerm: '',
+            result: null,
+            searchTerm: DEFAULT_QUERY,
         };
 
+        this.setSearchTopStories = this.setSearchTopStories.bind(this)
         this.onSearchChange = this.onSearchChange.bind(this)
         this.onDismiss = this.onDismiss.bind(this);
+    }
+
+    setSearchTopStories(result) {
+        this.setState({ result });
     }
 
     onSearchChange(event) {
@@ -105,6 +89,14 @@ class App extends Component {
         this.setState({ searchTerm: event.target.value });
     }
 
+    componentDidMount() {
+        const { searchTerm } = this.state;
+        let full_url = `${URL}${searchTerm}`
+        fetch(full_url)
+            .then(response => response.json())
+            .then(result => this.setSearchTopStories(result))
+            .catch(error => error)
+    }
 
     onDismiss(id) {
         // When we dissmiss => get the new list without selected id, update this list again
@@ -117,7 +109,9 @@ class App extends Component {
 
     render() {
         // firstly get searchTerm and list from current state
-        const { searchTerm, list } = this.state
+        console.log(this.state)
+        const { searchTerm, result } = this.state
+        if (!result) { return null; };
         // after that pass them to another components
         return (
             <div className="page">
@@ -131,7 +125,7 @@ class App extends Component {
                     </Search>
                 </div>
                 <Table
-                    list={list}
+                    list={result.hits}
                     pattern={searchTerm}
                     onDismiss={this.onDismiss}
                 />
