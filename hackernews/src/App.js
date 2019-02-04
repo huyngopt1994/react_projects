@@ -19,26 +19,27 @@ const midColumn = {
 const smallColumn = {
     width: '10%',
 }
-const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 // Now we using composition attributes for Search component
-const Search = ({ value, onChange, children }) => {
+const Search = ({ value, onChange, onSubmit, children }) => {
     return (
-        <form>
-            {children}
+        <form onSubmit={onSubmit}>
             <input type="text"
                    value={value}
                    onChange={onChange}
             />
+            <button type="submit">
+                {children}
+            </button>
         </form>
     )
 }
 
 
-const Table = ({ list, pattern, onDismiss }) => {
+const Table = ({ list, onDismiss }) => {
     return (
         <div className="table">
-            {list.filter(isSearched(pattern)).map(item =>
+            {list.map(item =>
                 <div key={item.objectID} className="table-row">
                     <span style={largeColumn}>
                         <a href={item.url}>{item.title}</a>
@@ -76,12 +77,27 @@ class App extends Component {
         };
 
         this.setSearchTopStories = this.setSearchTopStories.bind(this)
+        this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this)
         this.onSearchChange = this.onSearchChange.bind(this)
+        this.onSearchSubmit = this.onSearchSubmit.bind(this)
         this.onDismiss = this.onDismiss.bind(this);
     }
 
     setSearchTopStories(result) {
         this.setState({ result });
+    }
+
+    fetchSearchTopStories(searchTerm) {
+        fetch(`${URL}${searchTerm}`)
+            .then(response => response.json())
+            .then(result => this.setSearchTopStories(result))
+            .catch(error => error)
+    }
+
+    onSearchSubmit(event) {
+        const { searchTerm } = this.state;
+        this.fetchSearchTopStories(searchTerm);
+        event.preventDefault();
     }
 
     onSearchChange(event) {
@@ -91,20 +107,14 @@ class App extends Component {
 
     componentDidMount() {
         const { searchTerm } = this.state;
-        let full_url = `${URL}${searchTerm}`
-        fetch(full_url)
-            .then(response => response.json())
-            .then(result => this.setSearchTopStories(result))
-            .catch(error => error)
+        this.fetchSearchTopStories(searchTerm);
     }
 
     onDismiss(id) {
         // When we dissmiss => get the new list without selected id, update this list again
-        console.log(id);
         const isNotId = item => item.objectID !== id;
         const updatedList = this.state.result.hits.filter(isNotId);
         // when state was changed , render will be call
-        console.log(updatedList);
         this.setState({
             result: {
                 ...this.state.result,
@@ -129,16 +139,16 @@ class App extends Component {
                         // pass parameter
                         value={searchTerm}
                         onChange={this.onSearchChange}
+                        onSubmit={this.onSearchSubmit}
                     >
                         Search:
                     </Search>
                 </div>
                 {result &&
-                    <Table
-                        list={result.hits}
-                        pattern={searchTerm}
-                        onDismiss={this.onDismiss}
-                    />
+                <Table
+                    list={result.hits}
+                    onDismiss={this.onDismiss}
+                />
                 }
             </div>
         );
