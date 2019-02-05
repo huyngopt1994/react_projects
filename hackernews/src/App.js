@@ -80,12 +80,16 @@ class App extends Component {
             searchTerm: DEFAULT_QUERY,
 
         };
-
+        this.needsToSearchTopStories = this.needsToSearchTopStories(this)
         this.setSearchTopStories = this.setSearchTopStories.bind(this)
         this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this)
         this.onSearchChange = this.onSearchChange.bind(this)
         this.onSearchSubmit = this.onSearchSubmit.bind(this)
         this.onDismiss = this.onDismiss.bind(this);
+    }
+
+    needsToSearchTopStories(searchTerm) {
+        return !this.state.results[searchTerm]
     }
 
     setSearchTopStories(result) {
@@ -118,7 +122,9 @@ class App extends Component {
     onSearchSubmit(event) {
         const { searchTerm } = this.state;
         this.setState({ searchKey: searchTerm });
-        this.fetchSearchTopStories(searchTerm);
+        if (this.needsToSearchTopStories(searchTerm)){
+            this.fetchSearchTopStories(searchTerm);
+        }
         event.preventDefault();
     }
 
@@ -135,13 +141,16 @@ class App extends Component {
 
     onDismiss(id) {
         // When we dissmiss => get the new list without selected id, update this list again
+        const { searchKey, results } = this.state;
+        const { hits, page } = results[searchKey];
+
         const isNotId = item => item.objectID !== id;
-        const updatedList = this.state.result.hits.filter(isNotId);
+        const updatedList = hits.filter(isNotId);
         // when state was changed , render will be call
         this.setState({
-            result: {
-                ...this.state.result,
-                hits: updatedList,
+            results: {
+                ...results,
+                [searchKey]: { hits: updatedList, page }
             }
         });
     }
@@ -172,10 +181,14 @@ class App extends Component {
                     onDismiss={this.onDismiss}
                 />
                 <div className="interactions">
+                    <input type="text"
+                           value={DEFAULT_HPP}
+                    />
                     <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
                         More
                     </Button>
                 </div>
+
             </div>
         );
     }
