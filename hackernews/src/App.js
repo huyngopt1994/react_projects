@@ -71,20 +71,19 @@ const Table = ({ list, onDismiss }) => {
 }
 
 class App extends Component {
-    _isMounted = false;
 
     constructor(props) {
         super(props);
 
         // create state
         this.state = {
-            results: {},
+            results: null,
             searchKey: '',
             searchTerm: DEFAULT_QUERY,
             error: null
 
         };
-        this.needsToSearchTopStories = this.needsToSearchTopStories(this)
+        this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this)
         this.setSearchTopStories = this.setSearchTopStories.bind(this)
         this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this)
         this.onSearchChange = this.onSearchChange.bind(this)
@@ -93,13 +92,13 @@ class App extends Component {
     }
 
     needsToSearchTopStories(searchTerm) {
-        return !this.state.results[searchTerm]
+        return !(this.state.results && this.state.results[searchTerm])
     }
 
     setSearchTopStories(result) {
         const { hits, page } = result;
         const { searchKey, results } = this.state;
-
+        console.log(this.state)
         const oldHits = results && results[searchKey]
             ? results[searchKey].hits
             : [];
@@ -118,8 +117,8 @@ class App extends Component {
 
     fetchSearchTopStories(searchTerm, page = 0) {
         axios(`${URL}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-            .then(result => this._isMounted && this.setSearchTopStories(result.data))
-            .catch(error => this._isMounted && this.setState({ error }))
+            .then(result => this.setSearchTopStories(result.data))
+            .catch(error => this.setState({ error }))
     }
 
     onSearchSubmit(event) {
@@ -137,15 +136,11 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
         const { searchTerm } = this.state;
         this.setState({ searchKey: searchTerm });
         this.fetchSearchTopStories(searchTerm);
     }
 
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
 
     onDismiss(id) {
         // When we dissmiss => get the new list without selected id, update this list again
@@ -171,6 +166,7 @@ class App extends Component {
         const list = (
             results && results[searchKey] && results[searchKey].hits
         ) || [];
+        console.log(this.state);
         return (
             <div className="page">
                 <div className="interactions">
