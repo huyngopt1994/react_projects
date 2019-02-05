@@ -75,9 +75,10 @@ class App extends Component {
 
         // create state
         this.state = {
-            results: null,
+            results: {},
             searchKey: '',
             searchTerm: DEFAULT_QUERY,
+            error: null
 
         };
         this.needsToSearchTopStories = this.needsToSearchTopStories(this)
@@ -116,13 +117,13 @@ class App extends Component {
         fetch(`${URL}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
             .then(response => response.json())
             .then(result => this.setSearchTopStories(result))
-            .catch(error => error)
+            .catch(error => this.setState({ error }))
     }
 
     onSearchSubmit(event) {
         const { searchTerm } = this.state;
         this.setState({ searchKey: searchTerm });
-        if (this.needsToSearchTopStories(searchTerm)){
+        if (this.needsToSearchTopStories(searchTerm)) {
             this.fetchSearchTopStories(searchTerm);
         }
         event.preventDefault();
@@ -157,13 +158,12 @@ class App extends Component {
 
     render() {
         // firstly get searchTerm and list from current state
-        const { searchTerm, results, searchKey } = this.state
+        const { searchTerm, results, searchKey, error } = this.state
         const page = (results && results[searchKey] && results[searchKey].page) || 0
         // after that pass them to another components
         const list = (
             results && results[searchKey] && results[searchKey].hits
         ) || [];
-        console.log(this.state);
         return (
             <div className="page">
                 <div className="interactions">
@@ -176,10 +176,15 @@ class App extends Component {
                         Search
                     </Search>
                 </div>
-                <Table
-                    list={list}
-                    onDismiss={this.onDismiss}
-                />
+                {error
+                    ? <div className="interactions">
+                        <p>Some thing went wrong.</p>
+                    </div>
+                    : <Table
+                        list={list}
+                        onDismiss={this.onDismiss}
+                    />
+                }
                 <div className="interactions">
                     <input type="text"
                            value={DEFAULT_HPP}
