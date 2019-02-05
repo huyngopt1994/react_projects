@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
 import Button from './Utils'
+import PropTypes from 'prop-types';
 
 import {
     DEFAULT_QUERY,
@@ -200,6 +201,27 @@ class App extends Component {
     }
 }
 
+Button.propTypes = {
+    onClick: PropTypes.func,
+    className: PropTypes.string,
+    children: PropTypes.node,
+}
+
+Button.defaultProps = {
+    className: '',
+}
+Table.propTypes = {
+    list: PropTypes.arrayOf(
+        PropTypes.shape({
+            objectID: PropTypes.string.isRequired,
+            author: PropTypes.string,
+            url: PropTypes.string,
+            num_comments: PropTypes.number,
+            points: PropTypes.number
+        })
+    ).isRequired,
+    onDismiss: PropTypes.func.isRequired
+}
 export default App;
 
 export {
