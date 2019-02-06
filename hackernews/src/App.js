@@ -4,10 +4,11 @@ import React, { Component } from 'react';
 import './App.css';
 import Button from './components/Button'
 import Search from './components/Search'
-import Table from './components/Table'
+import { Table} from './components/Table'
 import Loading from './components/Loading'
 
 import { DEFAULT_HPP, DEFAULT_QUERY, PARAM_HPP, PARAM_PAGE, URL, } from './constants/index.js';
+
 
 const withLoading = (Component) => ({ isLoading, ...rest }) =>
     isLoading
@@ -35,7 +36,8 @@ class App extends Component {
             searchKey: '',
             searchTerm: DEFAULT_QUERY,
             error: null,
-            isLoading: false
+            isLoading: false,
+            sortKey: 'NONE'
 
         };
         this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this)
@@ -44,6 +46,11 @@ class App extends Component {
         this.onSearchChange = this.onSearchChange.bind(this)
         this.onSearchSubmit = this.onSearchSubmit.bind(this)
         this.onDismiss = this.onDismiss.bind(this);
+        this.onSort = this.onSort.bind(this);
+    }
+
+    onSort(sortKey) {
+        this.setState({ sortKey })
     }
 
     needsToSearchTopStories(searchTerm) {
@@ -118,7 +125,7 @@ class App extends Component {
 
     render() {
         // firstly get searchTerm and list from current state
-        const { searchTerm, results, searchKey, error, isLoading } = this.state
+        const { searchTerm, results, searchKey, error, isLoading, sortKey } = this.state
         const page = (results && results[searchKey] && results[searchKey].page) || 0
         // after that pass them to another components
         const list = (
@@ -142,6 +149,8 @@ class App extends Component {
                     error={error}
                     list={list}
                     onDismiss={this.onDismiss}
+                    sortKey={sortKey}
+                    onSort={this.onSort}
                 >
                 </TableHandlingError>
                 <div className="interactions">

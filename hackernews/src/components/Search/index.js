@@ -6,9 +6,10 @@ class Search extends Component {
         if (this.input) {
             this.input.focus();
         }
-    }
+    };
 
     render() {
+        const titleSearch = `${DEFAULT_HPP} hits/page`;
         const {
             value,
             onChange,
@@ -29,7 +30,7 @@ class Search extends Component {
                     {children}
                 </button>
                 <input className='showInfo' type="text"
-                       value={DEFAULT_HPP}
+                       value={titleSearch}
                 />
             </form>);
     }

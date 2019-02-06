@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import Button from '../Button'
+import { sortBy } from 'lodash';
 
+const SORTS = {
+    NONE: list => list,
+    TITLE: list => sortBy(list, 'title'),
+    AUTHOR: list => sortBy(list, 'author'),
+    COMMENTS: list => sortBy(list, 'num_commnets').reverse(),
+    POINTS: list => sortBy(list, 'points').reverse()
+};
 const largeColumn = {
     width: '40%',
 }
@@ -15,11 +23,45 @@ const smallColumn = {
 class Table extends Component {
     render() {
         const {
-            list, onDismiss
+            list, onDismiss, sortKey, onSort
         } = this.props;
         return (
             <div className="table">
-                {list.map(item =>
+                <div className="table-header">
+                    <span style={largeColumn}>
+                        <Sort
+                            sortKey={'TITLE'}
+                            onSort={onSort}
+                        >
+                            Title
+                        </Sort>
+                    </span>
+                    <span style={midColumn}>
+                        <Sort
+                            sortKey={'AUTHOR'}
+                            onSort={onSort}
+                        >
+                            Author
+                        </Sort>
+                    </span>
+                    <span style={smallColumn}>
+                        <Sort
+                            sortKey={'COMMENTS'}
+                            onSort={onSort}
+                        >
+                            Comments
+                        </Sort>
+                    </span>
+                    <span style={smallColumn}>
+                        <Sort
+                            sortKey={'POINTS'}
+                            onSort={onSort}
+                        >
+                            Points
+                        </Sort>
+                    </span>
+                </div>
+                {SORTS[sortKey](list).map(item =>
                     <div key={item.objectID} className="table-row">
                     <span style={largeColumn}>
                         <a href={item.url}>{item.title}</a>
@@ -47,4 +89,20 @@ class Table extends Component {
     }
 }
 
-export default Table
+class Sort extends Component {
+    render() {
+        const {
+            sortKey, onSort, children
+        } = this.props;
+        return (
+            <Button
+                className="button-inline button-header"
+                onClick={() => onSort(sortKey)}
+            >
+                {children}
+            </Button>
+        )
+    }
+}
+
+export { Table }
