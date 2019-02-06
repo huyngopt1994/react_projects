@@ -22,10 +22,25 @@ const smallColumn = {
 }
 
 class Table extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            sortKey: 'NONE',
+            isSortReverse: false
+        }
+        this.onSort = this.onSort.bind(this);
+    }
+
+    onSort(sortKey) {
+        const isSortReverse = this.state.sortKey === sortKey && !this.state.isSortReverse;
+        this.setState({ sortKey, isSortReverse })
+    }
+
     render() {
         const {
-            list, onDismiss, sortKey, onSort, isSortReverse
+            list, onDismiss
         } = this.props;
+        const { sortKey, isSortReverse } = this.state
 
         const sortedList = SORTS[sortKey](list);
         const reverseSortedList = isSortReverse
@@ -37,7 +52,7 @@ class Table extends Component {
                     <span style={largeColumn}>
                         <Sort
                             sortKey={'TITLE'}
-                            onSort={onSort}
+                            onSort={this.onSort}
                             activateSortKey={sortKey}
                         >
                             Title
@@ -46,7 +61,7 @@ class Table extends Component {
                     <span style={midColumn}>
                         <Sort
                             sortKey={'AUTHOR'}
-                            onSort={onSort}
+                            onSort={this.onSort}
                             activateSortKey={sortKey}
                         >
                             Author
@@ -55,7 +70,7 @@ class Table extends Component {
                     <span style={smallColumn}>
                         <Sort
                             sortKey={'COMMENTS'}
-                            onSort={onSort}
+                            onSort={this.onSort}
                             activateSortKey={sortKey}
                         >
                             Comments
@@ -64,7 +79,7 @@ class Table extends Component {
                     <span style={smallColumn}>
                         <Sort
                             sortKey={'POINTS'}
-                            onSort={onSort}
+                            onSort={this.onSort}
                             activateSortKey={sortKey}
                         >
                             Points

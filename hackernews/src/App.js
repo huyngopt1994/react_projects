@@ -37,8 +37,6 @@ class App extends Component {
             searchTerm: DEFAULT_QUERY,
             error: null,
             isLoading: false,
-            sortKey: 'NONE',
-            isSortReverse: false
         };
         this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this)
         this.setSearchTopStories = this.setSearchTopStories.bind(this)
@@ -46,12 +44,6 @@ class App extends Component {
         this.onSearchChange = this.onSearchChange.bind(this)
         this.onSearchSubmit = this.onSearchSubmit.bind(this)
         this.onDismiss = this.onDismiss.bind(this);
-        this.onSort = this.onSort.bind(this);
-    }
-
-    onSort(sortKey) {
-        const isSortReverse = this.state.sortKey === sortKey && !this.state.isSortReverse;
-        this.setState({ sortKey, isSortReverse })
     }
 
     needsToSearchTopStories(searchTerm) {
@@ -60,24 +52,26 @@ class App extends Component {
 
     setSearchTopStories(result) {
         const { hits, page } = result;
-        const { searchKey, results } = this.state;
-        console.log(this.state)
-        const oldHits = results && results[searchKey]
-            ? results[searchKey].hits
-            : [];
 
-        const updatedHits = [
-            ...oldHits,
-            ...hits
-        ]
-        this.setState({
-            results: {
-                ...results,
-                [searchKey]: { hits: updatedHits, page },
+        this.setState(prevState => {
+            const { searchKey, results } = prevState;
+            const oldHits = results && results[searchKey]
+                ? results[searchKey].hits
+                : [];
 
-            },
-            isLoading: false
-        });
+            const updatedHits = [
+                ...oldHits,
+                ...hits
+            ]
+            return ({
+                results: {
+                    ...results,
+                    [searchKey]: { hits: updatedHits, page },
+
+                },
+                isLoading: false
+            });
+        })
     }
 
     fetchSearchTopStories(searchTerm, page = 0) {
@@ -126,7 +120,7 @@ class App extends Component {
 
     render() {
         // firstly get searchTerm and list from current state
-        const { searchTerm, results, searchKey, error, isLoading, sortKey, isSortReverse } = this.state
+        const { searchTerm, results, searchKey, error, isLoading } = this.state
         const page = (results && results[searchKey] && results[searchKey].page) || 0
         // after that pass them to another components
         const list = (
@@ -150,9 +144,6 @@ class App extends Component {
                     error={error}
                     list={list}
                     onDismiss={this.onDismiss}
-                    sortKey={sortKey}
-                    onSort={this.onSort}
-                    isSortReverse={isSortReverse}
                 >
                 </TableHandlingError>
                 <div className="interactions">
