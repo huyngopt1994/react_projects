@@ -9,6 +9,21 @@ import Loading from './components/Loading'
 
 import { DEFAULT_HPP, DEFAULT_QUERY, PARAM_HPP, PARAM_PAGE, URL, } from './constants/index.js';
 
+const withLoading = (Component) => ({ isLoading, ...rest }) =>
+    isLoading
+        ? <Loading/>
+        : <Component {...rest}/>
+
+const withError = (Component) => ({ error, ...rest }) =>
+    error
+        ? <div className="interactions">
+            <p>Some thing went wrong.</p>
+        </div>
+        : <Component {...rest}/>
+
+const ButtonWithLoading = withLoading(Button);
+const TableHandlingError = withError(Table)
+
 class App extends Component {
 
     constructor(props) {
@@ -121,26 +136,21 @@ class App extends Component {
                     >
                         Search
                     </Search>
+
                 </div>
-                {error
-                    ? <div className="interactions">
-                        <p>Some thing went wrong.</p>
-                    </div>
-                    : <Table
-                        list={list}
-                        onDismiss={this.onDismiss}
-                    />
-                }
+                <TableHandlingError
+                    error={error}
+                    list={list}
+                    onDismiss={this.onDismiss}
+                >
+                </TableHandlingError>
                 <div className="interactions">
-                    <input type="text"
-                           value={DEFAULT_HPP}
-                    />
-                    {isLoading
-                        ? <Loading/>
-                        : <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
-                            More
-                        </Button>
-                    }
+                    <ButtonWithLoading
+                        isLoading={isLoading}
+                        onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
+                    >
+                        More
+                    </ButtonWithLoading>
                 </div>
 
             </div>

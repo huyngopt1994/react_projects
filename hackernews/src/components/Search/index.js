@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import { DEFAULT_HPP } from '../../constants'
+import './index.css'
 class Search extends Component {
     componentDidMount() {
         if (this.input) {
@@ -27,6 +28,9 @@ class Search extends Component {
                 <button type="submit">
                     {children}
                 </button>
+                <input className='showInfo' type="text"
+                       value={DEFAULT_HPP}
+                />
             </form>);
     }
 }
