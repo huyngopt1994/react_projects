@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from '../Button'
+import classNames from 'classnames';
 import { sortBy } from 'lodash';
 
 const SORTS = {
@@ -23,8 +24,13 @@ const smallColumn = {
 class Table extends Component {
     render() {
         const {
-            list, onDismiss, sortKey, onSort
+            list, onDismiss, sortKey, onSort, isSortReverse
         } = this.props;
+
+        const sortedList = SORTS[sortKey](list);
+        const reverseSortedList = isSortReverse
+            ? sortedList.reverse()
+            : sortedList
         return (
             <div className="table">
                 <div className="table-header">
@@ -32,6 +38,7 @@ class Table extends Component {
                         <Sort
                             sortKey={'TITLE'}
                             onSort={onSort}
+                            activateSortKey={sortKey}
                         >
                             Title
                         </Sort>
@@ -40,6 +47,7 @@ class Table extends Component {
                         <Sort
                             sortKey={'AUTHOR'}
                             onSort={onSort}
+                            activateSortKey={sortKey}
                         >
                             Author
                         </Sort>
@@ -48,6 +56,7 @@ class Table extends Component {
                         <Sort
                             sortKey={'COMMENTS'}
                             onSort={onSort}
+                            activateSortKey={sortKey}
                         >
                             Comments
                         </Sort>
@@ -56,12 +65,13 @@ class Table extends Component {
                         <Sort
                             sortKey={'POINTS'}
                             onSort={onSort}
+                            activateSortKey={sortKey}
                         >
                             Points
                         </Sort>
                     </span>
                 </div>
-                {SORTS[sortKey](list).map(item =>
+                {reverseSortedList.map(item =>
                     <div key={item.objectID} className="table-row">
                     <span style={largeColumn}>
                         <a href={item.url}>{item.title}</a>
@@ -92,14 +102,19 @@ class Table extends Component {
 class Sort extends Component {
     render() {
         const {
-            sortKey, onSort, children
+            sortKey, onSort, children, activateSortKey
         } = this.props;
+        const sortClass = classNames(
+            'button-inline',
+            { 'button-active': sortKey === activateSortKey }
+        );
+
         return (
             <Button
-                className="button-inline button-header"
+                className={sortClass}
                 onClick={() => onSort(sortKey)}
             >
-                {children}
+                <i className="fas fa-sort-down">{children}</i>
             </Button>
         )
     }

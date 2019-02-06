@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Button from './components/Button'
 import Search from './components/Search'
-import { Table} from './components/Table'
+import { Table } from './components/Table'
 import Loading from './components/Loading'
 
 import { DEFAULT_HPP, DEFAULT_QUERY, PARAM_HPP, PARAM_PAGE, URL, } from './constants/index.js';
@@ -37,8 +37,8 @@ class App extends Component {
             searchTerm: DEFAULT_QUERY,
             error: null,
             isLoading: false,
-            sortKey: 'NONE'
-
+            sortKey: 'NONE',
+            isSortReverse: false
         };
         this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this)
         this.setSearchTopStories = this.setSearchTopStories.bind(this)
@@ -50,7 +50,8 @@ class App extends Component {
     }
 
     onSort(sortKey) {
-        this.setState({ sortKey })
+        const isSortReverse = this.state.sortKey === sortKey && !this.state.isSortReverse;
+        this.setState({ sortKey, isSortReverse })
     }
 
     needsToSearchTopStories(searchTerm) {
@@ -125,7 +126,7 @@ class App extends Component {
 
     render() {
         // firstly get searchTerm and list from current state
-        const { searchTerm, results, searchKey, error, isLoading, sortKey } = this.state
+        const { searchTerm, results, searchKey, error, isLoading, sortKey, isSortReverse } = this.state
         const page = (results && results[searchKey] && results[searchKey].page) || 0
         // after that pass them to another components
         const list = (
@@ -151,6 +152,7 @@ class App extends Component {
                     onDismiss={this.onDismiss}
                     sortKey={sortKey}
                     onSort={this.onSort}
+                    isSortReverse={isSortReverse}
                 >
                 </TableHandlingError>
                 <div className="interactions">

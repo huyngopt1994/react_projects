@@ -7,14 +7,11 @@
     padding: 0;
     font-size: inherit;
     cursor: pointer;
-    color: red;
-
-}
-.button-header {
-    color: blue;
+    color: inherit;
 }
 
 .button-active {
     border-radius: 0;
     border-bottom: 1px solid #38BB6C;
+    color: blue;
 }
