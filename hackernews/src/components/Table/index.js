@@ -85,12 +85,13 @@ class Table extends Component {
                             Points
                         </Sort>
                     </span>
+
                 </div>
                 {reverseSortedList.map(item =>
                     <div key={item.objectID} className="table-row">
-                    <span style={largeColumn}>
-                        <a href={item.url}>{item.title}</a>
-                    </span>
+                        <span style={largeColumn}>
+                            <a href={item.url}>{item.title}</a>
+                        </span>
                         <span style={midColumn}>
                         {item.author}
                         </span>
@@ -107,7 +108,7 @@ class Table extends Component {
                             >
                                 Dismiss
                             </Button>
-                    </span>
+                         </span>
                     </div>)}
             </div>
         )

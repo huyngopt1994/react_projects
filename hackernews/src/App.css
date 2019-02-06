@@ -16,8 +16,13 @@
     display: flex;
     line-height: 24px;
     font-size: 16px;
-    padding: 0 10px;
-    justify-content: space-between;
+    padding: 0px;
+}
+
+.table-header > span {
+    padding: 0px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .table-empty {
@@ -36,15 +41,9 @@
     border: 1px solid #e3e3e3;
 }
 
-.table-header > span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 5px;
-}
-
 .table-row > span {
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 0 5px;
+    padding-left: 10px;
 }
 
