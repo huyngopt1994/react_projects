@@ -1,73 +1,11 @@
-import React, { Component } from 'react';
 import axios from 'axios';
-import './App.css';
-import Button from './Utils'
 import PropTypes from 'prop-types';
-
-import {
-    DEFAULT_QUERY,
-    DEFAULT_HPP,
-    PARAM_PAGE,
-    PARAM_HPP,
-    URL,
-} from './constants/index.js';
-
-const largeColumn = {
-    width: '40%',
-}
-
-const midColumn = {
-    width: '30%',
-}
-const smallColumn = {
-    width: '10%',
-}
-
-// Now we using composition attributes for Search component
-const Search = ({ value, onChange, onSubmit, children }) => {
-    return (
-        <form onSubmit={onSubmit}>
-            <input type="text"
-                   value={value}
-                   onChange={onChange}
-            />
-            <button type="submit">
-                {children}
-            </button>
-        </form>
-    )
-}
-
-
-const Table = ({ list, onDismiss }) => {
-    return (
-        <div className="table">
-            {list.map(item =>
-                <div key={item.objectID} className="table-row">
-                    <span style={largeColumn}>
-                        <a href={item.url}>{item.title}</a>
-                    </span>
-                    <span style={midColumn}>
-                        {item.author}
-                        </span>
-                    <span style={smallColumn}>
-                        {item.num_comments}
-                        </span>
-                    <span style={smallColumn}>
-                        {item.points}
-                        </span>
-                    <span style={smallColumn}>
-                            <Button
-                                onClick={() => onDismiss(item.objectID)}
-                                className='button-inline'
-                            >
-                                Dismiss
-                            </Button>
-                    </span>
-                </div>)}
-        </div>
-    )
-}
+import React, { Component } from 'react';
+import './App.css';
+import Button from './components/Button'
+import Search from './components/Search'
+import Table from './components/Table'
+import { DEFAULT_HPP, DEFAULT_QUERY, PARAM_HPP, PARAM_PAGE, URL, } from './constants/index.js';
 
 class App extends Component {
 
@@ -210,6 +148,7 @@ Button.propTypes = {
 Button.defaultProps = {
     className: '',
 }
+
 Table.propTypes = {
     list: PropTypes.arrayOf(
         PropTypes.shape({
@@ -221,6 +160,13 @@ Table.propTypes = {
         })
     ).isRequired,
     onDismiss: PropTypes.func.isRequired
+}
+
+Search.propTypes = {
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    children: PropTypes.node
 }
 export default App;
 
