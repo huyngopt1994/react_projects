@@ -5,6 +5,8 @@ import './App.css';
 import Button from './components/Button'
 import Search from './components/Search'
 import Table from './components/Table'
+import Loading from './components/Loading'
+
 import { DEFAULT_HPP, DEFAULT_QUERY, PARAM_HPP, PARAM_PAGE, URL, } from './constants/index.js';
 
 class App extends Component {
@@ -17,7 +19,8 @@ class App extends Component {
             results: null,
             searchKey: '',
             searchTerm: DEFAULT_QUERY,
-            error: null
+            error: null,
+            isLoading: false
 
         };
         this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this)
@@ -47,12 +50,15 @@ class App extends Component {
         this.setState({
             results: {
                 ...results,
-                [searchKey]: { hits: updatedHits, page }
-            }
+                [searchKey]: { hits: updatedHits, page },
+
+            },
+            isLoading: false
         });
     }
 
     fetchSearchTopStories(searchTerm, page = 0) {
+        this.setState({ isLoading: true });
         axios(`${URL}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
             .then(result => this.setSearchTopStories(result.data))
             .catch(error => this.setState({ error }))
@@ -97,7 +103,7 @@ class App extends Component {
 
     render() {
         // firstly get searchTerm and list from current state
-        const { searchTerm, results, searchKey, error } = this.state
+        const { searchTerm, results, searchKey, error, isLoading } = this.state
         const page = (results && results[searchKey] && results[searchKey].page) || 0
         // after that pass them to another components
         const list = (
@@ -129,9 +135,12 @@ class App extends Component {
                     <input type="text"
                            value={DEFAULT_HPP}
                     />
-                    <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
-                        More
-                    </Button>
+                    {isLoading
+                        ? <Loading/>
+                        : <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
+                            More
+                        </Button>
+                    }
                 </div>
 
             </div>
